@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         mBluetoothHandler = new Handler() {
             public void handleMessage(android.os.Message msg) {
-
+                // 이 밑 어디선가 블루투스로 사고정보 수신
                 if (msg.what == BT_MESSAGE_READ) {
                     String readMessage = null;
                     try {
@@ -132,19 +132,19 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     mTvReceiveData.setText(readMessage);
-
-                    if (readMessage.contains("A") && Alert == 1) {
-                        Alert = 0;
-                        Toast.makeText(getApplicationContext(), "전복사고 감지", Toast.LENGTH_LONG).show();
-                        cursor = db.rawQuery("SELECT * FROM tableName", null);
+                //저기랑 여기 사이
+                    if (readMessage.contains("A") && Alert == 1) { //쌍따옴표 안에 들어가는게 사고 유형 코드
+                        Alert = 0;//중복감지 방지를 위해 알레트 꺼버리기
+                        Toast.makeText(getApplicationContext(), "전복사고 감지", Toast.LENGTH_LONG).show();//토스트 메시지로 알림
+                        cursor = db.rawQuery("SELECT * FROM tableName", null);//주소록 로드
                         startManagingCursor(cursor);
 
 
-                        while (cursor.moveToNext()) {
+                        while (cursor.moveToNext()) {//주소록에 모든 번호로 문자 보낼떄까지 반복
                             try {
                                 //전송
                                 SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(cursor.getString(1), null, "전복사고 감지", null, null);
+                                smsManager.sendTextMessage(cursor.getString(1), null, "전복사고 감지", null, null);//문자 전송
                                 Toast.makeText(getApplicationContext(), "전송 완료!", Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
                                 Toast.makeText(getApplicationContext(), "SMS faild, please try again later!", Toast.LENGTH_LONG).show();
