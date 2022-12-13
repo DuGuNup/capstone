@@ -40,8 +40,8 @@ volatile double alpha;
 
 int main()
 {  
-
-	//UART
+//**********ì´ˆê¸°ì„¤ì • ì‹œìž‘**********
+	//UART, 
 	UCSR1A = 0x00;
 	UCSR1B = 0b00011000; 
 	UCSR1C = (3<<UCSZ00);  
@@ -53,12 +53,12 @@ int main()
 	TWBR = 12;	 		//400khz
 
 	//TIMER0
-	TCCR0 = (1<<CS02)|(1<<CS01);	//256 ºÐÁÖ 
-	TCNT0 = 256-125;				//125 ¹ø => 0.002s
+	TCCR0 = (1<<CS02)|(1<<CS01);	//256 ë¶„ì£¼ 
+	TCNT0 = 256-125;				//125 ë²ˆ => 0.002s
 	TIMSK = (1<<TOIE0);
 
 	//MPU6050 init
-	twi_write(0x6B, 0x00); 	//sleep ²û
+	twi_write(0x6B, 0x00); 	//sleep ë”
 	twi_write(0x1A, 0x05); 	//DLPF 10Hz
 
 	calibrate();
@@ -92,15 +92,15 @@ int main()
 	a_x_min = 0;
 	a_y_min = 0;
 	a_z_min = 0;
-
+//**********ì´ˆê¸°ì„¤ì • ë**********
 	while(1)
 	{ 
 		get_raw_data();
 
-		las_angle_gx = roll;	//ÃÖ±Ù°ª ´©Àû
+		las_angle_gx = roll;	//ìµœê·¼ê°’ ëˆ„ì 
 		las_angle_gy = pitch;
 		las_angle_gz = yaw;
-
+//ê°’ ë°›ì•„ì˜¤ê¸°
 		temp = (a_x_h<<8) | a_x_l;
 		a_x = temp;
 		temp = (a_y_h<<8) | a_y_l;
@@ -125,7 +125,7 @@ int main()
 		g_x_sum = g_x_tmp + g_x;
 		g_y_sum = g_y_tmp + g_y;
 		g_z_sum = g_z_tmp + g_z;
-
+		// ëˆ„ì  ì˜¤ì°¨ ì œê±°ìš© ì½”ë“œ(ì¼ì •ê°’ ì´í•˜ ì‚­ì œ)
 		if(g_x < 10 && g_x > -10 && g_x_sum < 1000)
 		{
 			g_x_sum = 0;
@@ -138,7 +138,7 @@ int main()
 		{
 			g_z_sum = 0;
 		}
-
+		//ì—¬ê¸°ê¹Œì§€
 		
 		angle_ax = atan(-1.000*a_y/sqrt(pow(a_x,2) + pow(a_z,2)))*180/3.141592;
 		angle_ay = atan(a_x/sqrt(pow(a_y,2) + pow(a_z,2)))*180/3.141592;
@@ -224,7 +224,7 @@ int main()
 			USART_Transmit('\n');
 			USART_Transmit('\r');
 			acc_cou = 0;
-		} °¡¼Ó¼öÄ¡ ÇÃ¸¶ 20000 ±âÁØÁ¡
+		} ê°€ì†ìˆ˜ì¹˜ í”Œë§ˆ 20000 ê¸°ì¤€ì 
 		*/
 
 		/*
@@ -245,33 +245,33 @@ int main()
 		USART_Transmit('\n');
 		*/
 
-
+		//ì‚¬ê³  ê°ì§€ ì½”ë“œ
 		if((g_y_sum > 5000 || g_z_sum > 5000 || g_y_sum < -5000 || g_z_sum < -5000) && Fall_Lv_1)
 		{
-			Alert = Alert + 1;
+			Alert = Alert + 1; //ì•Œë ˆíŠ¸ì— +0001
 			det_btn = 1;
 			Fall_Lv_1 = 0;
 		}		
 
 		if((g_y_sum > 15000 || g_z_sum > 15000 || g_y_sum < -15000 || g_z_sum < -15000) && Fall_Lv_2)
 		{
-			Alert = Alert + 2;
+			Alert = Alert + 2; //ì•Œë ˆíŠ¸ì— +0010
 			det_btn = 1;
 			Fall_Lv_2 = 0;
 		}
 
 		if((a_y > 20000 || a_z > 20000 || a_y < -20000 || a_z < -20000) && Crash_Lv_1)
 		{
-			Alert = Alert + 4;
+			Alert = Alert + 4; //ì•Œë ˆíŠ¸ì— +0100
 			det_btn = 1;
 			Crash_Lv_1 = 0;
 		}
 		/*
-		A Àüº¹
-		C Ãß¶ô
-		D Ãæµ¹
-		E Ãæµ¹ ÈÄ Àüº¹
-		G Ãæµ¹ ÈÄ Ãß¶ô
+		A ì „ë³µ
+		C ì¶”ë½
+		D ì¶©ëŒ
+		E ì¶©ëŒ í›„ ì „ë³µ
+		G ì¶©ëŒ í›„ ì¶”ë½
 		*/
 
 
@@ -315,11 +315,11 @@ ISR(TIMER0_OVF_vect)	//0.002s
 
 
 
-void calibrate()	//ÃÊ±â°ª ÀÐ±â 
+void calibrate()	//ì´ˆê¸°ê°’ ì½ê¸° 
 {
 	int cal = 10;
 
-	for(int i=0; i<cal; i++)	//Æò±Õ 
+	for(int i=0; i<cal; i++)	//í‰ê·  
 	{
 		get_raw_data();
 	
@@ -346,7 +346,7 @@ void calibrate()	//ÃÊ±â°ª ÀÐ±â
 	g_y /= cal;
 	g_z /= cal;
 
-	bas_a_x = a_x;	//ÃÊ±â °ªÀ¸·Î ÀúÀå 
+	bas_a_x = a_x;	//ì´ˆê¸° ê°’ìœ¼ë¡œ ì €ìž¥ 
 	bas_a_y = a_y;
 	bas_a_z = a_z;
 	bas_g_x = g_x;
@@ -358,17 +358,17 @@ void calibrate()	//ÃÊ±â°ª ÀÐ±â
 
 void get_raw_data()
 {
-	a_x_h = twi_read(0x3B);		//xÃà °¡¼Óµµ
+	a_x_h = twi_read(0x3B);		//xì¶• ê°€ì†ë„
 	a_x_l = twi_read(0x3C);
-	a_y_h = twi_read(0x3D);		//yÃà °¡¼Óµµ 
+	a_y_h = twi_read(0x3D);		//yì¶• ê°€ì†ë„ 
 	a_y_l = twi_read(0x3E);		
-	a_z_h = twi_read(0x3F);		//zÃà °¡¼Óµµ 
+	a_z_h = twi_read(0x3F);		//zì¶• ê°€ì†ë„ 
 	a_z_l = twi_read(0x40);		
-	g_x_h = twi_read(0x43);		//xÃà °¢¼Óµµ 
+	g_x_h = twi_read(0x43);		//xì¶• ê°ì†ë„ 
 	g_x_l = twi_read(0x44);		
-	g_y_h = twi_read(0x45);		//yÃà °¢¼Óµµ 
+	g_y_h = twi_read(0x45);		//yì¶• ê°ì†ë„ 
 	g_y_l = twi_read(0x46);		
-	g_z_h = twi_read(0x47);		//zÃà °¢¼Óµµ 
+	g_z_h = twi_read(0x47);		//zì¶• ê°ì†ë„ 
 	g_z_l = twi_read(0x48);		
 }
 
@@ -379,23 +379,23 @@ void twi_write(unsigned char address,unsigned char data)
 { 
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);	//START
 
-	while(!(TWCR & (1<<TWINT))); //TWINT flag ±â´Ù¸² 
-	while((TWSR&0xF8) != 0x08);  //START »óÅÂ(08) ±â´Ù¸²  
+	while(!(TWCR & (1<<TWINT))); //TWINT flag ê¸°ë‹¤ë¦¼ 
+	while((TWSR&0xF8) != 0x08);  //START ìƒíƒœ(08) ê¸°ë‹¤ë¦¼  
 
 	TWDR = 0b11010000;			 //AD(1101000)+W(0) 
-	TWCR = (1<<TWINT)|(1<<TWEN); //Àü¼Û 
+	TWCR = (1<<TWINT)|(1<<TWEN); //ì „ì†¡ 
 
 	while(!(TWCR & (1<<TWINT))); 
-	while((TWSR&0xF8) != 0x18);  //SLA+W ACK »óÅÂ(18) ±â´Ù¸²
+	while((TWSR&0xF8) != 0x18);  //SLA+W ACK ìƒíƒœ(18) ê¸°ë‹¤ë¦¼
 
 	TWDR = address; 			 //register address
-	TWCR = (1<<TWINT)|(1<<TWEN); //Àü¼Û
+	TWCR = (1<<TWINT)|(1<<TWEN); //ì „ì†¡
 
 	while(!(TWCR & (1<<TWINT)));
-	while((TWSR&0xF8) != 0x28);  //Data ACK »óÅÂ(28) ±â´Ù¸² 
+	while((TWSR&0xF8) != 0x28);  //Data ACK ìƒíƒœ(28) ê¸°ë‹¤ë¦¼ 
 
 	TWDR = data; 				 //data 
-	TWCR = (1<<TWINT)|(1<<TWEN); //Àü¼Û  
+	TWCR = (1<<TWINT)|(1<<TWEN); //ì „ì†¡  
 
 	while(!(TWCR & (1<<TWINT)));
 	while((TWSR&0xF8) != 0x28);
@@ -411,36 +411,36 @@ unsigned char twi_read(char address)
 
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);	//START
 
-	while(!(TWCR & (1<<TWINT))); //TWINT flag ±â´Ù¸² 
-	while((TWSR&0xF8) != 0x08);  //START »óÅÂ(08) ±â´Ù¸²  
+	while(!(TWCR & (1<<TWINT))); //TWINT flag ê¸°ë‹¤ë¦¼ 
+	while((TWSR&0xF8) != 0x08);  //START ìƒíƒœ(08) ê¸°ë‹¤ë¦¼  
 
 	TWDR = 0b11010000;			 //AD(1101000)+W(0) 
-	TWCR = (1<<TWINT)|(1<<TWEN); //Àü¼Û 
+	TWCR = (1<<TWINT)|(1<<TWEN); //ì „ì†¡ 
 
 	while(!(TWCR & (1<<TWINT))); 
-	while((TWSR&0xF8) != 0x18);  //SLA+W ACK »óÅÂ(18) ±â´Ù¸²
+	while((TWSR&0xF8) != 0x18);  //SLA+W ACK ìƒíƒœ(18) ê¸°ë‹¤ë¦¼
 
 	TWDR = address; 			 //register address
-	TWCR = (1<<TWINT)|(1<<TWEN); //Àü¼Û
+	TWCR = (1<<TWINT)|(1<<TWEN); //ì „ì†¡
 
 	while(!(TWCR & (1<<TWINT)));
-	while((TWSR&0xF8) != 0x28);  //Data ACK »óÅÂ(28) ±â´Ù¸² 
+	while((TWSR&0xF8) != 0x28);  //Data ACK ìƒíƒœ(28) ê¸°ë‹¤ë¦¼ 
 
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);	//Repeat START
 
 	while(!(TWCR & (1<<TWINT)));
-	while((TWSR&0xF8) != 0x10);  //Repeat START »óÅÂ(08) ±â´Ù¸²
+	while((TWSR&0xF8) != 0x10);  //Repeat START ìƒíƒœ(08) ê¸°ë‹¤ë¦¼
 
 	TWDR = 0b11010001;			 //AD(1101000)+R(1) 
-	TWCR = (1<<TWINT)|(1<<TWEN); //Àü¼Û 
+	TWCR = (1<<TWINT)|(1<<TWEN); //ì „ì†¡ 
 
 	while(!(TWCR & (1<<TWINT)));
-	while((TWSR&0xF8) != 0x40);  //SLA+R ACK »óÅÂ(40) ±â´Ù¸² 
+	while((TWSR&0xF8) != 0x40);  //SLA+R ACK ìƒíƒœ(40) ê¸°ë‹¤ë¦¼ 
 
-	TWCR = (1<<TWINT)|(1<<TWEN); //Àü¼Û
+	TWCR = (1<<TWINT)|(1<<TWEN); //ì „ì†¡
 
 	while(!(TWCR & (1<<TWINT)));
-	while((TWSR&0xF8) != 0x58);  //ACK »óÅÂ(58) ±â´Ù¸² 
+	while((TWSR&0xF8) != 0x58);  //ACK ìƒíƒœ(58) ê¸°ë‹¤ë¦¼ 
 
 	data = TWDR; 
 
